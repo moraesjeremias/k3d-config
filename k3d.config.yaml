@@ -1,14 +1,15 @@
-apiVersion: k3d.io/v1alpha3
+apiVersion: k3d.io/v1alpha4
 kind: Simple 
-name: mycluster
+metadata:
+  name: mycluster
 servers: 1
 agents: 3
-image: rancher/k3s:v1.23.2-rc1-k3s1
+image: rancher/k3s:v1.26.3-k3s1
 kubeAPI:
  hostIP: "127.0.0.1"
  hostPort: "6445"
 ports:
- - port: 8080:80
+ - port: 9090:80
    nodeFilters:
     - loadbalancer
 options:
@@ -18,6 +19,9 @@ options:
  k3s:
    extraArgs:
       - arg: --tls-san=my.host.domain
+        nodeFilters:
+          - server:*
+      - arg: '--kube-apiserver-arg=feature-gates=PDBUnhealthyPodEvictionPolicy=true'
         nodeFilters:
           - server:*
  kubeconfig:
